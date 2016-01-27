@@ -7,6 +7,6 @@ namespace testing.Constants
 {
     public class Paths
     {
-        public const string JsonPath = @"e:\News.json";
+       public static string JsonPath = AppDomain.CurrentDomain.BaseDirectory + "Json_Data/News.json";
     }
 }
