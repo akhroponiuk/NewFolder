@@ -261,6 +261,7 @@
     <Content Include="Views\News\Add.cshtml" />
     <Content Include="Views\News\Article.cshtml" />
     <Content Include="Views\Account\RoleAddToUser.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Json_Data\" />

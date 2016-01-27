@@ -14,6 +14,12 @@ namespace testing
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "welcome",
+                url: "welcome",
+                defaults: new { controller = "Home", action = "Index" }
+            );
+
+            routes.MapRoute(
                 name: "Home",
                 url: "",
                 defaults: new { controller = "News", action = "Index"}
