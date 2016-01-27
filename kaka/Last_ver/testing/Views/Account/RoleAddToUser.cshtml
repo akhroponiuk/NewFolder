@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "RoleAddToUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="spacerBody">
+
+    <h2>Add role to user</h2>
+    @using (Html.BeginForm("RoleAddToUser", "Account"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="message-success">@ViewBag.ResultMessage</div>
+        <p>
+            Username : @Html.DropDownList("UserName", ViewBag.Users as SelectList)
+            Role Name: @Html.DropDownList("RoleName", ViewBag.Roles as SelectList)
+        </p>
+
+        <input type="submit" value="Save" />
+    }
+
+    <h2>Remove role from user</h2>
+    @using (Html.BeginForm("DeleteRoleForUser", "Account"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <p>
+            Username : @Html.DropDownList("UserName", ViewBag.Users as SelectList)
+            Role Name: @Html.DropDownList("RoleName", ViewBag.Roles as SelectList)
+        </p>
+
+        <input type="submit" value="Delete this user from Role" />
+    }
+</div>

@@ -1,0 +1,23 @@
+﻿@model testing.Models.News
+@using testing.Models;
+
+@{
+    ViewBag.Title = "Add";
+}
+
+<form method="post" action="">
+    @Html.AntiForgeryToken()
+    <section>
+        <p>Название</p>
+        @Html.TextBox("Caption", "", new { @class = "ar_title" })<br />
+        <p>Содержание новости</p>
+        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+        <script>tinymce.init({ selector: 'textarea' });</script>
+        <textarea name="text" class="ar_content"></textarea><br />
+        <div class="checkbox_visible">
+            <label>@Html.CheckBox("IsVisible", true)<span>Показывать посетителям?</span></label>
+        </div>
+        <input type="submit" value="Submit" class="sub_redact" />
+    </section>
+</form>
+

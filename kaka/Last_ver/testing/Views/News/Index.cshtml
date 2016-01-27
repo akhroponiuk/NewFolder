@@ -1,0 +1,64 @@
+﻿@model testing.Models.ViewToModel.NewsIndexModelView
+
+@using testing.Helpers
+@using testing.Constants
+@using testing.Models.NewsManagement
+
+
+@if (User.IsInRole(UserRoles.AdminRoleName) || User.IsInRole(UserRoles.EditorRoleName))
+{
+    <div class="add_art">
+        @Html.RouteLink("Add", "NewsAdd", new { id = Guid.NewGuid() }, null)
+    </div>
+}
+@if (User.IsInRole(UserRoles.AdminRoleName))
+{
+    <div class="add_art">
+        @Html.RouteLink("Change Roles", "RoleAddToUser")
+    </div>
+}
+
+@Html.ActionLink("Author ID", "Index", new { sortOrder = Model.ArticleSort.NameSortParm})
+@Html.ActionLink("publication Date", "Index", new { sortOrder = Model.ArticleSort.DateSortParm })
+<table>
+    <tbody>
+        @foreach (var a in Model.News)
+        {
+                <tr>
+                    <td>
+                        <div class="name">
+                            <h2>
+                                Статья:
+                                @a.Caption
+
+
+                            </h2>
+                            <p>@a.Date</p>
+                            <p>@a.AuthorsID</p>
+                        </div>
+
+                        <p class="visibility"> @a.IsVisible ? "Visible" : "Invisible"</p>
+
+
+                        @if (User.IsInRole(UserRoles.AdminRoleName) || (User.Identity.Name == a.AuthorsID))
+                        {
+                            <div class="buttons">    
+                                @Html.RouteLink("Edit", "NewsArticle", new { id = a.ID, translit =  Transliteration.GetTranslit(a.Caption)})
+                                @Html.RouteLink("Delete", "HomeDel", new { id = a.ID }, new { onclick = "return confirm('Are you sure you wish to delete this article?');" })
+                            </div>
+                        }
+                    </td>
+
+                </tr>
+                <tr class="cell_margin">
+                    <td class="content">@Html.Raw(a.Text)</td>
+                </tr>
+
+            
+        }
+    </tbody>
+</table>
+<br/>
+<div class="btn-group">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("Index", new { page = x, sortOrder = Model.ArticleSort.CurrentSort}))
+</div>
