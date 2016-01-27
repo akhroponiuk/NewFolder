@@ -1,17 +1,22 @@
-﻿@model testing.Models.News
+﻿@model testing.Models.NewsManagement.News
 
 
 <form method="post" action="">
-    @Html.AntiForgeryToken()
     <section>
+
         @Html.TextBox("Caption", @Model.Caption, new { @class = "ar_title" })<br />
+
         <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
         <script>tinymce.init({ selector: 'textarea' });</script>
+
         <textarea name="text" class="ar_content">@Html.Raw(Model.Text)</textarea><br />
+       
         <div class="checkbox_visible">
             <label>@Html.CheckBox("IsVisible", Model.IsVisible)<span>Показывать посетителям?</span></label>
         </div>
+
         <input type="submit" value="Submit" class="sub_redact" />
+
     </section>
 </form>
 

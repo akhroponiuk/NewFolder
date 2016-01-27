@@ -48,5 +48,6 @@ namespace testing.Models.ViewToModel
             News = news.ToList<News>();
             PageInfo = pageInfo;
         }
+        public NewsIndexModelView() { }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System;
 using System.Web.Mvc;
-using System.Web;
-using testing.Models;
 using testing.Models.NewsManagement;
 using testing.Constants;
 using testing.Models.ViewToModel;
@@ -12,26 +10,25 @@ namespace testing.Controllers
 {
     public class NewsController : Controller
     {
-        private News[] news = NewsManagement.ReadJson();
+        private NewsManagement newsManagement = new NewsManagement();
 
         [HttpGet]
         public ActionResult Index(string sortOrder, int page=1)
         {
-            int pageSize = 3;
-            List<News> phonesPerPage = news.Skip((page - 1) * pageSize).Take(pageSize).ToList<News>();
-            PageInfo pageInfo = new PageInfo(pageSize, page);
-            NewsIndexModelView nivm = new NewsIndexModelView(phonesPerPage, pageInfo);
+            PageInfo pageInfo = new PageInfo(PageConstants.itemsPerPage, page);
+            NewsIndexModelView nivm = new NewsIndexModelView();
+            nivm.PageInfo = pageInfo;
 
 
 
             List<News> sortedNews = new List<News>();
             if (User.IsInRole(Constants.UserRoles.AdminRoleName))
             {
-                sortedNews = news.ToList<News>();
+                sortedNews = newsManagement.news.ToList<News>();
             }
             else
             {
-                foreach (var item in news)
+                foreach (var item in newsManagement.news)
                 {
                     if (item.IsVisible || User.Identity.Name == item.AuthorsID)
                     {
@@ -56,22 +53,24 @@ namespace testing.Controllers
             }
 
             ArticleSorting sortingParam = new ArticleSorting();
+
             sortingParam.CurrentSort = sortOrder;
             sortingParam.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             sortingParam.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
             nivm.ArticleSort = sortingParam;
-            nivm.News = sortedNews.Skip((page - 1) * pageSize).Take(pageSize).ToList<News>();
+            nivm.News = sortedNews.Skip((page - 1) * PageConstants.itemsPerPage).Take(PageConstants.itemsPerPage).ToList<News>(); ;
             nivm.PageInfo.TotalItems = sortedNews.Count;
+
             return View(nivm);
         }
 
         [HttpGet]
         [AuthorizeRoles(UserRoles.AdminRoleName,UserRoles.EditorRoleName)]
-        [ValidateAntiForgeryToken]
         public ActionResult Article(Guid id)
         {
-            foreach (News item in news)
-                if (item.ID == id)
+            foreach (News item in newsManagement.news)
+                if (item.Id == id)
                     return View(item);
             return Redirect("/error");
         }
@@ -82,7 +81,7 @@ namespace testing.Controllers
         public ActionResult Article(News changedArticle)
         {
             changedArticle.AuthorsID = User.Identity.Name;
-            NewsManagement.ChangeNews(changedArticle, news);
+            newsManagement.ChangeNews(changedArticle);
             return Redirect("/");
         }
 
@@ -90,17 +89,16 @@ namespace testing.Controllers
         [AuthorizeRoles(UserRoles.AdminRoleName, UserRoles.EditorRoleName)]
         public ActionResult Del(Guid id)
         {
-            NewsManagement.DeleteNews(news, id);
+            newsManagement.DeleteNews(id);
             return Redirect("/");
         }
 
         [HttpGet]
         [AuthorizeRoles(UserRoles.AdminRoleName, UserRoles.EditorRoleName)]
-        [ValidateAntiForgeryToken]
         public ActionResult Add(Guid id)
         {
             News newArticle = new News();
-            newArticle.ID = Guid.NewGuid();
+            newArticle.Id = id;
 
             return View(newArticle);
         }
@@ -111,7 +109,7 @@ namespace testing.Controllers
         public ActionResult Add(News newArticle)
         {
             newArticle.AuthorsID = User.Identity.Name;
-            NewsManagement.AddNews(newArticle, news);
+            newsManagement.AddNews(newArticle);
             return Redirect("/");
         }
     }

@@ -4,6 +4,10 @@
 @using testing.Constants
 @using testing.Models.NewsManagement
 
+@{
+    ViewBag.Title = "Главная";
+ }
+
 
 @if (User.IsInRole(UserRoles.AdminRoleName) || User.IsInRole(UserRoles.EditorRoleName))
 {
@@ -19,10 +23,11 @@
 }
 
 @Html.ActionLink("Author ID", "Index", new { sortOrder = Model.ArticleSort.NameSortParm})
-@Html.ActionLink("publication Date", "Index", new { sortOrder = Model.ArticleSort.DateSortParm })
+@Html.ActionLink("Publication Date", "Index", new { sortOrder = Model.ArticleSort.DateSortParm })
+
 <table>
     <tbody>
-        @foreach (var a in Model.News)
+        @foreach(var a in Model.News)
         {
                 <tr>
                     <td>
@@ -33,32 +38,41 @@
 
 
                             </h2>
-                            <p>@a.Date</p>
-                            <p>@a.AuthorsID</p>
+                            Дата написания:<p> @a.Date</p>
+                            Автор:<p> @a.AuthorsID</p>
                         </div>
 
-                        <p class="visibility"> @a.IsVisible ? "Visible" : "Invisible"</p>
-
+                        @if (User.IsInRole(UserRoles.AdminRoleName) || User.IsInRole(UserRoles.EditorRoleName))
+                        {
+                            if (a.IsVisible)
+                            {
+                                <p class="visibility">Visible</p>
+                            }
+                            else
+                            {
+                                <p class="visibility">Unvisible</p>
+                            }
+                        }
 
                         @if (User.IsInRole(UserRoles.AdminRoleName) || (User.Identity.Name == a.AuthorsID))
                         {
                             <div class="buttons">    
-                                @Html.RouteLink("Edit", "NewsArticle", new { id = a.ID, translit =  Transliteration.GetTranslit(a.Caption)})
-                                @Html.RouteLink("Delete", "HomeDel", new { id = a.ID }, new { onclick = "return confirm('Are you sure you wish to delete this article?');" })
+                                @Html.RouteLink("Edit", "NewsArticle", new { id = a.Id, translit =  Transliteration.GetTranslit(a.Caption)})
+                                @Html.RouteLink("Delete", "HomeDel", new { id = a.Id }, new { onclick = "return confirm('Are you sure you wish to delete this article?');" })
                             </div>
                         }
                     </td>
 
                 </tr>
-                <tr class="cell_margin">
+                <tr>
                     <td class="content">@Html.Raw(a.Text)</td>
                 </tr>
-
             
         }
     </tbody>
 </table>
 <br/>
+
 <div class="btn-group">
     @Html.PageLinks(Model.PageInfo, x => Url.Action("Index", new { page = x, sortOrder = Model.ArticleSort.CurrentSort}))
 </div>

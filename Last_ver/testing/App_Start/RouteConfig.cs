@@ -15,7 +15,7 @@ namespace testing
 
             routes.MapRoute(
                 name: "Home",
-                url: "trololo/{page}{sortOrder}",
+                url: "",
                 defaults: new { controller = "News", action = "Index"}
             );
 

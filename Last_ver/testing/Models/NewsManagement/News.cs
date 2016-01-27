@@ -6,7 +6,7 @@ namespace testing.Models.NewsManagement
 {
     public class News
     {
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Trololo lalala")]
         public string Caption { get; set; }
@@ -22,6 +22,16 @@ namespace testing.Models.NewsManagement
         public string AuthorsID { get; set; }
 
         public News() { }
-        
+
+        public News(Guid id, string caption, string text, DateTime date, bool visibility, string authorsId)
+        {
+            this.Id = id;
+            this.Caption = caption;
+            this.Text = text;
+            this.Date = date;
+            this.IsVisible = visibility;
+            this.AuthorsID = authorsId;
+        }
+
     }
 }
